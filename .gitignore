@@ -1,0 +1,54 @@
+# --- Секреты и окружение (НИКОГДА не коммитить!) ---
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+.auth
+auth.json
+nova.json
+
+# --- Зависимости ---
+/vendor
+/node_modules
+
+# --- Сборка ---
+/public/build
+/public/css/filament
+/public/fonts/filament
+/public/hot
+/public/js/filament
+/public/storage
+/storage/*.key
+/storage/pail
+
+# --- Локальные базы SQLite ---
+/database/*.sqlite
+/database/*.sqlite-*
+
+# --- Логи и кеш ---
+/storage/logs/*.log
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/bootstrap/cache/*
+*.log
+
+# --- Системные и IDE ---
+.DS_Store
+Thumbs.db
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+.fleet
+.phpactor.json
+.phpunit.result.cache
+
+# --- Прочее ---
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/laravel
+/.ai

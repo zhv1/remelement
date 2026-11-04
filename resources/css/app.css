@@ -1,0 +1,27 @@
+@import 'tailwindcss';
+@import '@artisanpack-ui/tokens/css';
+
+@source '../views';
+@source '../js';
+@source '../../node_modules/@artisanpack-ui/react/dist';
+@source '../../node_modules/@artisanpack-ui/react-laravel/dist';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+@plugin "daisyui" {
+    themes: light --default, dark --prefersdark;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Ваши фирменные цвета */
+  --color-brand-dark: #1a1a1a;
+  --color-brand-gray: #2d2d2d;
+  --color-brand-light: #f5f5f5;
+  --color-accent: #e63946;
+  --color-accent-hover: #c1121f;
+
+  /* Шрифты */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Oswald', sans-serif;
+}
