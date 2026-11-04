@@ -3,8 +3,10 @@
     "name": "laravel/react-starter-kit",
     "type": "project",
     "description": "A Laravel application.",
-    "keywords": ["laravel", "framework"],
-    "version": "2.0.0",
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.3",
