@@ -15,8 +15,8 @@ export default function SiteFooter() {
           <div>
             <h3 className="font-display text-xl font-bold mb-4">Контакты</h3>
             <p className="text-gray-400">г. Новосибирск, ул. Софийская, 12/2</p>
-            <a href="tel:+73832000000" className="text-accent hover:text-white transition-colors">
-              +7 (383) 200-00-00
+            <a href="tel:+79513860392" className="text-accent hover:text-white transition-colors">
+              +7 951 386-03-92
             </a>
           </div>
         </div>
