@@ -307,3 +307,51 @@ test('catalog search stemming keeps article tokens exact', function () {
             ->where('products.data.0.name', 'Свеча накаливания')
         );
 });
+
+
+test('catalog search expands synonyms', function () {
+    // «дворники» должно находить «Щётка стеклоочистителя»
+    makeCatalogProduct(['name' => 'Щётка стеклоочистителя TOYOTA CAMRY']);
+    makeCatalogProduct(['name' => 'Антифриз концентрат']);
+    makeCatalogProduct(['name' => 'Отопитель салона NISSAN SUNNY']);
+    makeCatalogProduct(['name' => 'Опора двигателя правая']);
+    makeCatalogProduct(['name' => 'Фара левая']);
+
+    $this->get('/catalog?' . http_build_query(['search' => 'дворники']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('products.data', 1)
+            ->where('products.data.0.name', 'Щётка стеклоочистителя TOYOTA CAMRY')
+        );
+
+    // симметрично: «щётка» находит «дворник» в наименовании
+    $this->get('/catalog?' . http_build_query(['search' => 'щетки']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('products.data', 1)
+        );
+
+    // «тосол» находит «Антифриз»
+    $this->get('/catalog?' . http_build_query(['search' => 'тосол']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('products.data', 1)
+            ->where('products.data.0.name', 'Антифриз концентрат')
+        );
+
+    // «печка» находит «Отопитель»
+    $this->get('/catalog?' . http_build_query(['search' => 'печка']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('products.data', 1)
+            ->where('products.data.0.name', 'Отопитель салона NISSAN SUNNY')
+        );
+
+    // «подушка двигателя» находит «Опора двигателя»
+    $this->get('/catalog?' . http_build_query(['search' => 'подушка двигателя']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('products.data', 1)
+            ->where('products.data.0.name', 'Опора двигателя правая')
+        );
+});

@@ -151,13 +151,14 @@ class CatalogController extends Controller
      * Токенизированный case-insensitive поиск по search_index.
      * Кириллические токены дополнительно ищутся по основе слова (без окончания):
      * «свечи» → «свеч» находит и «Свеча», и «свечи». Артикулы не стеммятся.
+     * Токены из групп синонимов расширяются: «дворники» находит «Щётка».
      */
     private function applySearch($query, string $search): void
     {
         $tokens = preg_split('/\s+/u', \App\Support\RuStemmer::normalize(trim($search))) ?: [];
 
         foreach ($tokens as $token) {
-            $variants = array_unique([$token, \App\Support\RuStemmer::stem($token)]);
+            $variants = \App\Support\RuStemmer::expand($token);
 
             $query->where(function ($q) use ($variants) {
                 foreach ($variants as $variant) {
