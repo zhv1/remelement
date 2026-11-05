@@ -257,3 +257,53 @@ test('search suggest requires at least two characters', function () {
         ->assertOk()
         ->assertJsonCount(0, 'suggestions');
 });
+
+test('catalog search matches word forms via stemming', function () {
+    // «свечи» должно находить наименование «Свеча»
+    makeCatalogProduct(['name' => 'Свеча зажигания TOYOTA COROLLA', 'partname_name' => 'Свеча']);
+    makeCatalogProduct(['name' => 'Фара левая']);
+    makeCatalogProduct(['name' => 'Крыло Hyundai Solaris']);
+
+    $this->get('/catalog?' . http_build_query(['search' => 'свечи']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('products.data', 1)
+            ->where('products.data.0.name', 'Свеча зажигания TOYOTA COROLLA')
+        );
+
+    $this->get('/catalog?' . http_build_query(['search' => 'фары']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->where('products.data.0.name', 'Фара левая')
+        );
+
+    $this->get('/catalog?' . http_build_query(['search' => 'крылья']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->where('products.data.0.name', 'Крыло Hyundai Solaris')
+        );
+});
+
+test('catalog search normalizes ё', function () {
+    makeCatalogProduct(['name' => 'Стёкла комплект']);
+    makeCatalogProduct(['name' => 'Фара левая']);
+
+    $this->get('/catalog?' . http_build_query(['search' => 'стекла']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('products.data', 1)
+            ->where('products.data.0.name', 'Стёкла комплект')
+        );
+});
+
+test('catalog search stemming keeps article tokens exact', function () {
+    makeCatalogProduct(['name' => 'Свеча зажигания', 'mfrnumber' => 'BKR6E-11']);
+    makeCatalogProduct(['name' => 'Свеча накаливания', 'mfrnumber' => 'Y-607AS']);
+
+    $this->get('/catalog?' . http_build_query(['search' => 'Y-607AS']))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('products.data', 1)
+            ->where('products.data.0.name', 'Свеча накаливания')
+        );
+});

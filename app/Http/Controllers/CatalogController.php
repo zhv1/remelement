@@ -149,16 +149,23 @@ class CatalogController extends Controller
 
     /**
      * Токенизированный case-insensitive поиск по search_index.
-     * Совпадение в нижнем регистре — «крыло solaris» находит «Крыло Hyundai Solaris».
+     * Кириллические токены дополнительно ищутся по основе слова (без окончания):
+     * «свечи» → «свеч» находит и «Свеча», и «свечи». Артикулы не стеммятся.
      */
     private function applySearch($query, string $search): void
     {
-        $tokens = preg_split('/\s+/u', mb_strtolower(trim($search))) ?: [];
+        $tokens = preg_split('/\s+/u', \App\Support\RuStemmer::normalize(trim($search))) ?: [];
 
         foreach ($tokens as $token) {
-            // '!' как ESCAPE-символ — работает одинаково и в SQLite, и в MySQL
-            $escaped = addcslashes($token, '%_!');
-            $query->whereRaw("search_index LIKE ? ESCAPE '!'", ["%{$escaped}%"]);
+            $variants = array_unique([$token, \App\Support\RuStemmer::stem($token)]);
+
+            $query->where(function ($q) use ($variants) {
+                foreach ($variants as $variant) {
+                    // '!' как ESCAPE-символ — работает одинаково и в SQLite, и в MySQL
+                    $escaped = addcslashes($variant, '%_!');
+                    $q->orWhereRaw("search_index LIKE ? ESCAPE '!'", ["%{$escaped}%"]);
+                }
+            });
         }
     }
 

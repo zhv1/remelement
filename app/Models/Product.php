@@ -32,12 +32,12 @@ class Product extends Model
     }
 
     /**
-     * Нижний регистр всех поисковых полей — обходит ограничение SQLite LIKE
+     * Нижний регистр всех поисковых полей (ё→е) — обходит ограничение SQLite LIKE
      * (case-insensitive только для латиницы) и упрощает запрос до одной колонки.
      */
     public static function buildSearchIndex(?string ...$fields): string
     {
-        return mb_strtolower(implode(' ', array_filter($fields)));
+        return \App\Support\RuStemmer::normalize(implode(' ', array_filter($fields)));
     }
 
     public function carsrc()
