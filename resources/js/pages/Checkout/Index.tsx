@@ -49,12 +49,13 @@ export default function CheckoutIndex() {
 
   // Пункты выдачи при выборе города (только СДЭК)
   useEffect(() => {
-    if (method !== 'cdek' || !form.delivery_city.trim()) {
-      setCdekPoints([]);
-      return;
-    }
+    const city = method === 'cdek' ? form.delivery_city.trim() : '';
     const t = setTimeout(() => {
-      axios.get('/api/delivery/cdek-points', { params: { city: form.delivery_city.trim() } })
+      if (!city) {
+        setCdekPoints([]);
+        return;
+      }
+      axios.get('/api/delivery/cdek-points', { params: { city } })
         .then((r) => setCdekPoints(r.data.points || []))
         .catch(() => setCdekPoints([]));
     }, 300);
