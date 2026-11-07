@@ -3,10 +3,8 @@ import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 
 const companies = [
-  { name: 'СДЭК', note: 'До пункта выдачи или до двери' },
-  { name: 'Деловые Линии', note: 'Крупногабаритные грузы' },
-  { name: 'ПЭК', note: 'Выгодные тарифы по России' },
-  { name: 'КИТ', note: 'Доставка по Сибири и Уралу' },
+  { name: 'СДЭК', note: 'До пункта выдачи в вашем городе — пункт можно выбрать при оформлении заказа' },
+  { name: 'Энергия', note: 'До терминала в вашем городе — удобно для крупногабаритных деталей' },
 ];
 
 const steps = [
@@ -72,19 +70,21 @@ export default function Delivery() {
                 Транспортной компанией
               </h2>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Отправляем заказы по всей России и в страны СНГ. Стоимость
-                рассчитывается по тарифам ТК и оплачивается при получении.
+                Отправляем заказы по всей России и в страны СНГ транспортными
+                компаниями СДЭК и Энергия. Доставка заказа до терминала ТК
+                в Новосибирске — 300 ₽, тариф ТК оплачивается при получении.
               </p>
               <ul className="space-y-3">
                 {companies.map((c) => (
-                  <li key={c.name} className="flex justify-between items-center border-b border-gray-100 pb-2 text-sm">
-                    <span className="font-semibold">{c.name}</span>
-                    <span className="text-gray-500">{c.note}</span>
+                  <li key={c.name} className="border-b border-gray-100 pb-3 text-sm">
+                    <p className="font-semibold">{c.name}</p>
+                    <p className="text-gray-500">{c.note}</p>
                   </li>
                 ))}
               </ul>
               <p className="text-sm text-gray-500 mt-4">
-                Возможна отправка другой ТК по вашему выбору.
+                Для отправки понадобятся ФИО получателя полностью и город —
+                груз выдают по паспорту.
               </p>
             </div>
           </div>

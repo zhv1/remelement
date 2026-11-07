@@ -41,6 +41,17 @@ Route::post('/orders', [OrderController::class, 'store'])
     ->name('orders.store');
 Route::get('/checkout/success', [OrderController::class, 'success'])->name('checkout.success');
 
+// Справочник пунктов выдачи СДЭК по городу (демо-данные, см. config/cdek_points.php)
+Route::get('/api/delivery/cdek-points', function (\Illuminate\Http\Request $request) {
+    $city = trim((string) $request->query('city', ''));
+    $points = config('cdek_points', []);
+
+    return response()->json([
+        'cities' => array_keys($points),
+        'points' => $points[$city] ?? [],
+    ]);
+})->middleware('throttle:60,1')->name('delivery.cdek-points');
+
 Route::get('dashboard', fn() => Inertia::render('Dashboard'))
     ->middleware(['auth', 'verified'])
     ->name('dashboard');

@@ -19,10 +19,18 @@
         @if($order->customer_comment)
             <p><strong>Комментарий:</strong> {{ $order->customer_comment }}</p>
         @endif
-        <p><strong>Доставка:</strong> {{ $order->delivery_type === 'pickup' ? 'Самовывоз' : 'Доставка' }}</p>
-        @if($order->delivery_address)
-            <p><strong>Адрес:</strong> {{ $order->delivery_address }}</p>
-        @endif
+        <p><strong>Доставка:</strong>
+            @if($order->delivery_type === 'pickup')
+                Самовывоз (Новосибирск, ул. Софийская, 12/2)
+            @else
+                ТК {{ $order->delivery_company === 'cdek' ? 'СДЭК' : 'Энергия' }},
+                г. {{ $order->delivery_city }}
+                @if($order->delivery_point)
+                    — {{ $order->delivery_point }}
+                @endif
+                (+{{ number_format($order->delivery_cost, 0, '.', ' ') }} ₽ до терминала ТК)
+            @endif
+        </p>
     </div>
 
     <div style="margin-top: 20px;">
@@ -45,6 +53,14 @@
                         <td style="padding: 10px; text-align: right;">{{ number_format($item->subtotal, 0, '.', ' ') }} ₽</td>
                     </tr>
                 @endforeach
+                @if($order->delivery_cost > 0)
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 10px;">Доставка до ТК</td>
+                        <td style="padding: 10px; text-align: right;">{{ number_format($order->delivery_cost, 0, '.', ' ') }} ₽</td>
+                        <td style="padding: 10px; text-align: center;">1</td>
+                        <td style="padding: 10px; text-align: right;">{{ number_format($order->delivery_cost, 0, '.', ' ') }} ₽</td>
+                    </tr>
+                @endif
                 <tr style="background: #f5f5f5; font-weight: bold;">
                     <td colspan="3" style="padding: 10px; text-align: right;">Итого:</td>
                     <td style="padding: 10px; text-align: right;">{{ number_format($order->total, 0, '.', ' ') }} ₽</td>

@@ -46,7 +46,17 @@ class OrderForm
                             'delivery' => 'Доставка ТК',
                         ])
                         ->required(),
-                    TextInput::make('delivery_address')->label('Адрес доставки'),
+                    Select::make('delivery_company')
+                        ->label('Транспортная компания')
+                        ->options([
+                            'cdek' => 'СДЭК',
+                            'energia' => 'Энергия',
+                        ]),
+                    TextInput::make('delivery_city')->label('Город'),
+                    TextInput::make('delivery_point')->label('Пункт выдачи СДЭК'),
+                    TextInput::make('delivery_cost')->label('Доставка до ТК, ₽')->numeric(),
+                    TextInput::make('customer_lastname')->label('Фамилия'),
+                    TextInput::make('customer_middlename')->label('Отчество'),
                 ]),
         ]);
     }
