@@ -137,7 +137,7 @@ export default function ProductShow({ product, similar }: Props) {
                       idx === activeImage ? 'border-accent' : 'border-transparent'
                     }`}
                   >
-                    <img src={url} alt="" className="w-full h-full object-cover" />
+                    <img src={url} alt="" className="w-full h-full object-contain p-1" />
                   </button>
                 ))}
               </div>

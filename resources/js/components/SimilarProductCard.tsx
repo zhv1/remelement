@@ -18,11 +18,11 @@ export default function SimilarProductCard({ product, highlight = false }: Props
         highlight ? 'ring-2 ring-accent' : ''
       }`}
     >
-      <div className="relative aspect-square bg-gray-100 overflow-hidden">
+      <div className="relative aspect-square bg-white overflow-hidden">
         <img
           src={image}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
         />
         {inStock && (
           <span className="absolute top-2 left-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded">
