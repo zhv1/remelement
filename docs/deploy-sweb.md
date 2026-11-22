@@ -166,18 +166,15 @@ php artisan event:cache
 
 OPcache на SpaceWeb включён по умолчанию.
 
-## 11. Почта о заказах (опционально, но желательно)
+## 11. Почта о заказах — очередь
 
-Сейчас письмо менеджеру отправляется синхронно при оформлении заказа.
-Для shared-хостинга (нет supervisor) очередь запускается кроном — добавить
-задачу раз в минуту:
+Письмо менеджеру ставится в очередь (`Mail::queue`), чтобы клиент не ждал SMTP.
+Локально используется `QUEUE_CONNECTION=sync` (воркер не нужен), на проде —
+`database` и запуск воркера кроном раз в минуту (на shared нет supervisor):
 
 ```bash
-php ~/site.ru/artisan queue:work --stop-when-empty --max-time=50 >> /dev/null 2>&1
+php ~/site.ru/artisan queue:work database --stop-when-empty --max-time=50 >> /dev/null 2>&1
 ```
-
-и в коде заменить `Mail::send(...)` на `Mail::queue(...)`
-(отдельная задача, делается после переезда).
 
 ## 12. Чеклист после деплоя
 

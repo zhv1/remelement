@@ -1,8 +1,10 @@
 <?php
 
+use App\Mail\NewOrderMail;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 function makeProduct(array $attrs = []): Product
 {
@@ -212,6 +214,16 @@ test('order history shows only own orders', function () {
             ->has('orders.data', 1)
             ->where('orders.data.0.user_id', $user->id)
         );
+});
+
+test('order confirmation mail is queued, not sent synchronously', function () {
+    Mail::fake();
+    $product = makeProduct();
+
+    $this->postJson('/orders', orderPayload($product))->assertOk();
+
+    Mail::assertQueued(NewOrderMail::class);
+    expect(Order::first()->email_sent)->toBeTrue();
 });
 
 test('guest is redirected from order history to login', function () {

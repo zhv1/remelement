@@ -131,10 +131,11 @@ class OrderController extends Controller
             $order->update(['total' => $total + $deliveryCost]);
 
             try {
-                Mail::send(new NewOrderMail($order->fresh('items')));
+                // Письмо уходит в очередь — клиент не ждёт SMTP
+                Mail::queue(new NewOrderMail($order->fresh('items')));
                 $order->update(['email_sent' => true]);
             } catch (\Exception $e) {
-                \Log::error('Не удалось отправить письмо: ' . $e->getMessage());
+                \Log::error('Не удалось поставить письмо в очередь: ' . $e->getMessage());
             }
 
             DB::commit();
