@@ -49,3 +49,7 @@ npm-debug.log
 yarn-error.log
 /laravel
 /.ai
+
+# SQLite WAL sidecar files
+laravel-shm
+laravel-wal
