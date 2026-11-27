@@ -3,7 +3,7 @@ import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 
 const companies = [
-  { name: 'СДЭК', note: 'До пункта выдачи в вашем городе — пункт можно выбрать при оформлении заказа' },
+  { name: 'СДЭК', note: 'До пункта выдачи в вашем городе — адрес удобного ПВЗ укажите при оформлении заказа' },
   { name: 'Энергия', note: 'До терминала в вашем городе — удобно для крупногабаритных деталей' },
 ];
 

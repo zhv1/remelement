@@ -93,6 +93,31 @@ export default function CheckoutSuccess({ order }: { order: Order | null }) {
           <a href="/catalog" className="bg-brand-dark hover:bg-accent text-white font-semibold uppercase px-6 py-3 rounded transition-colors">Продолжить покупки</a>
           <a href="/" className="border-2 border-brand-dark hover:bg-brand-dark hover:text-white font-semibold uppercase px-6 py-3 rounded transition-colors">На главную</a>
         </div>
+
+        {/* Что дальше */}
+        <div className="mt-12 bg-white border border-gray-200 rounded-lg p-6 text-left">
+          <h2 className="font-display text-lg font-bold uppercase mb-4 text-center">Что происходит дальше</h2>
+          <ol className="space-y-3 text-sm text-gray-700">
+            <li className="flex gap-3">
+              <span className="w-6 h-6 flex-shrink-0 bg-accent text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
+              <span>Менеджер свяжется с вами по телефону, подтвердит заказ и согласует оплату.</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="w-6 h-6 flex-shrink-0 bg-accent text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
+              <span>Комплектуем и надёжно упаковываем ваш заказ — обычно в день оплаты.</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="w-6 h-6 flex-shrink-0 bg-accent text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
+              {order.delivery_type === 'delivery'
+                ? <span>Передаём груз в ТК и отправляем вам трек-номер для отслеживания.</span>
+                : <span>Ждём вас по адресу: г. Новосибирск, ул. Софийская, 12/2, ежедневно 9:00–17:00.</span>}
+            </li>
+          </ol>
+          <p className="text-sm text-gray-500 mt-5 text-center">
+            Вопросы по заказу? Звоните:{' '}
+            <a href="tel:+79513860392" className="text-accent font-semibold hover:underline">+7 951 386-03-92</a>
+          </p>
+        </div>
       </div>
       <SiteFooter />
     </>

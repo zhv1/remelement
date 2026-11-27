@@ -1,5 +1,5 @@
 import { Head, router } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import SiteHeader from '@/components/SiteHeader';
 import { useCart } from '@/contexts/CartContext';
 import axios from 'axios';
@@ -35,32 +35,10 @@ export default function CheckoutIndex() {
     delivery_city: '', delivery_point: '',
   });
   const [method, setMethod] = useState<DeliveryMethod>('pickup');
-  const [cdekCities, setCdekCities] = useState<string[]>([]);
-  const [cdekPoints, setCdekPoints] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
   const isDelivery = method !== 'pickup';
-
-  // Справочник городов СДЭК
-  useEffect(() => {
-    axios.get('/api/delivery/cdek-points').then((r) => setCdekCities(r.data.cities || [])).catch(() => {});
-  }, []);
-
-  // Пункты выдачи при выборе города (только СДЭК)
-  useEffect(() => {
-    const city = method === 'cdek' ? form.delivery_city.trim() : '';
-    const t = setTimeout(() => {
-      if (!city) {
-        setCdekPoints([]);
-        return;
-      }
-      axios.get('/api/delivery/cdek-points', { params: { city } })
-        .then((r) => setCdekPoints(r.data.points || []))
-        .catch(() => setCdekPoints([]));
-    }, 300);
-    return () => clearTimeout(t);
-  }, [method, form.delivery_city]);
 
   const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm({ ...form, [key]: e.target.value });
@@ -220,33 +198,23 @@ export default function CheckoutIndex() {
                         onChange={set('delivery_city')}
                         className={inputCls}
                         placeholder="Например: Красноярск"
-                        list={method === 'cdek' ? 'cdek-cities' : undefined}
                       />
-                      {method === 'cdek' && (
-                        <datalist id="cdek-cities">
-                          {cdekCities.map((c) => <option key={c} value={c} />)}
-                        </datalist>
-                      )}
                       {errors.delivery_city && <p className="text-red-500 text-sm mt-1">{errors.delivery_city}</p>}
                     </div>
 
-                    {method === 'cdek' && form.delivery_city.trim() && (
+                    {method === 'cdek' && (
                       <div>
                         <label className="block text-sm font-medium mb-1">Пункт выдачи СДЭК *</label>
-                        {cdekPoints.length > 0 ? (
-                          <select value={form.delivery_point} onChange={set('delivery_point')} className={inputCls}>
-                            <option value="">— Выберите пункт выдачи —</option>
-                            {cdekPoints.map((p) => <option key={p} value={p}>{p}</option>)}
-                          </select>
-                        ) : (
-                          <input
-                            type="text"
-                            value={form.delivery_point}
-                            onChange={set('delivery_point')}
-                            className={inputCls}
-                            placeholder="Укажите удобный ПВЗ или район — менеджер уточнит"
-                          />
-                        )}
+                        <input
+                          type="text"
+                          value={form.delivery_point}
+                          onChange={set('delivery_point')}
+                          className={inputCls}
+                          placeholder="Адрес удобного ПВЗ, например: ул. Ленина, 12"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Адреса пунктов: cdek.ru → «Офисы». Менеджер подтвердит выбранный пункт.
+                        </p>
                         {errors.delivery_point && <p className="text-red-500 text-sm mt-1">{errors.delivery_point}</p>}
                       </div>
                     )}
