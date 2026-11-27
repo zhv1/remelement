@@ -28,7 +28,7 @@ function formatPhone(value: string): string {
 const inputCls = 'w-full border border-gray-300 rounded px-4 py-2 focus:border-accent focus:outline-none';
 
 export default function CheckoutIndex() {
-  const { items, total, clearCart, removeItem } = useCart();
+  const { items, total, clearCart, removeItem, updateQuantity } = useCart();
   const [form, setForm] = useState({
     customer_name: '', customer_lastname: '', customer_middlename: '',
     customer_phone: '', customer_email: '', customer_comment: '',
@@ -232,7 +232,32 @@ export default function CheckoutIndex() {
                   <div key={item.product_id} className="flex justify-between items-start gap-2 text-sm border-b pb-2">
                     <div className="min-w-0">
                       <p className="font-medium">{item.name}</p>
-                      <p className="text-gray-500 whitespace-nowrap">{item.quantity} × {item.price.toLocaleString('ru-RU')}{' '}₽</p>
+                      <div className="flex items-center gap-2 text-gray-500 mt-1">
+                        <div className="flex items-center border border-gray-300 rounded">
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.product_id, item.quantity - 1)}
+                            aria-label="Уменьшить количество"
+                            className="px-2 py-0.5 hover:bg-gray-100 hover:text-red-500 transition-colors"
+                          >
+                            −
+                          </button>
+                          <span className="px-2 py-0.5 min-w-[2rem] text-center font-medium text-gray-900">{item.quantity}</span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.product_id, item.quantity + 1)}
+                            disabled={item.stock !== undefined && item.quantity >= item.stock}
+                            aria-label="Увеличить количество"
+                            className="px-2 py-0.5 hover:bg-gray-100 hover:text-green-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                          >
+                            +
+                          </button>
+                        </div>
+                        <span className="whitespace-nowrap">× {item.price.toLocaleString('ru-RU')}{' '}₽</span>
+                      </div>
+                      {item.stock !== undefined && item.quantity >= item.stock && (
+                        <p className="text-xs text-amber-600 mt-0.5">максимум по остатку ({item.stock} шт.)</p>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <span className="font-semibold whitespace-nowrap">{(item.price * item.quantity).toLocaleString('ru-RU')}{' '}₽</span>
