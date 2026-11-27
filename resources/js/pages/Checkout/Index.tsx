@@ -28,7 +28,7 @@ function formatPhone(value: string): string {
 const inputCls = 'w-full border border-gray-300 rounded px-4 py-2 focus:border-accent focus:outline-none';
 
 export default function CheckoutIndex() {
-  const { items, total, clearCart } = useCart();
+  const { items, total, clearCart, removeItem } = useCart();
   const [form, setForm] = useState({
     customer_name: '', customer_lastname: '', customer_middlename: '',
     customer_phone: '', customer_email: '', customer_comment: '',
@@ -229,12 +229,23 @@ export default function CheckoutIndex() {
               <h2 className="font-display text-xl font-bold uppercase mb-4">Ваш заказ</h2>
               <div className="space-y-3 mb-4">
                 {items.map((item) => (
-                  <div key={item.product_id} className="flex justify-between text-sm border-b pb-2">
-                    <div>
+                  <div key={item.product_id} className="flex justify-between items-start gap-2 text-sm border-b pb-2">
+                    <div className="min-w-0">
                       <p className="font-medium">{item.name}</p>
-                      <p className="text-gray-500">{item.quantity} × {item.price.toLocaleString('ru-RU')} ₽</p>
+                      <p className="text-gray-500 whitespace-nowrap">{item.quantity} × {item.price.toLocaleString('ru-RU')}{' '}₽</p>
                     </div>
-                    <span className="font-semibold">{(item.price * item.quantity).toLocaleString('ru-RU')} ₽</span>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span className="font-semibold whitespace-nowrap">{(item.price * item.quantity).toLocaleString('ru-RU')}{' '}₽</span>
+                      <button
+                        type="button"
+                        onClick={() => removeItem(item.product_id)}
+                        title="Удалить из заказа"
+                        aria-label={`Удалить ${item.name} из заказа`}
+                        className="text-gray-400 hover:text-red-500 transition-colors text-lg leading-none px-1"
+                      >
+                        ×
+                      </button>
+                    </div>
                   </div>
                 ))}
                 {isDelivery && (
@@ -243,13 +254,13 @@ export default function CheckoutIndex() {
                       <p className="font-medium">Доставка до ТК ({method === 'cdek' ? 'СДЭК' : 'Энергия'})</p>
                       <p className="text-gray-500">до терминала в Новосибирске</p>
                     </div>
-                    <span className="font-semibold">{DELIVERY_COST.toLocaleString('ru-RU')} ₽</span>
+                    <span className="font-semibold whitespace-nowrap">{DELIVERY_COST.toLocaleString('ru-RU')}{' '}₽</span>
                   </div>
                 )}
               </div>
               <div className="flex justify-between items-baseline border-t pt-4 mb-6">
                 <span className="font-semibold">Итого:</span>
-                <span className="text-2xl font-bold text-accent">{grandTotal.toLocaleString('ru-RU')} ₽</span>
+                <span className="text-2xl font-bold text-accent whitespace-nowrap">{grandTotal.toLocaleString('ru-RU')}{' '}₽</span>
               </div>
               {errors.items && <p className="text-red-500 text-sm mb-3">{errors.items}</p>}
               <button type="submit" disabled={loading} className="w-full bg-accent hover:bg-accent-hover disabled:bg-gray-400 text-white font-semibold uppercase tracking-wide py-4 rounded transition-colors">
